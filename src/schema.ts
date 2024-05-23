@@ -25,13 +25,15 @@ export interface IQuestion {
     tag: string[];
 }
 export interface IAskedQuestion{
+    _id : Schema.Types.ObjectId;
     question : string;
     options : string[];
     correctAnswer : string
-    answer : string;
+    answer : string | null;
     status : string;
 }
 export interface ITest {
+    _id ? : Schema.Types.ObjectId;
     user_id: Schema.Types.ObjectId;
     questions: IAskedQuestion[];
     created_at: Date;
@@ -128,7 +130,7 @@ const attemptedQuestion = new Schema<IAskedQuestion>({
     },
     status : {
         type : String,
-        enum : ['Correct','Incorrect','Skipped'],
+        enum : ['Correct','Incorrect','Skipped','Unanswered'],
         required : true
     },
 

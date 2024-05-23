@@ -1,4 +1,4 @@
-import { Model } from "mongoose";
+import { Model, Schema } from "mongoose";
 import { testModel,ITest } from "../schema";
 import { createErrorResponse, createResponse } from "../utilities/createResponse";
 import { apiResponse, errorResponse } from "../utilities/interfaces";
@@ -14,7 +14,8 @@ class TestModel {
         try {
             const test = new this.testModel(data);
             const response = await test.save();
-            return createResponse(true, "Test created successfully", response, 201);
+            
+            return createResponse(true, "Test created successfully", response._id, 201);
         } catch (error) {
             return createErrorResponse(false, "Test creation failed", [], `${error}`, 500, LOG_PRIORITY[3]);
         }
@@ -39,6 +40,17 @@ class TestModel {
             return createResponse(true, "Question inserted successfully", response, 200);
         } catch (error) {
             return createErrorResponse(false, "Question insertion failed", [], `${error}`, 500, LOG_PRIORITY[3]);
+        }
+    };
+    storeAnswer = async (id : Schema.Types.ObjectId, questionId : Schema.Types.ObjectId, answer : string) : Promise<apiResponse|errorResponse> => {
+        try {
+            const response = await this.testModel.updateOne({ _id: id, "questions._id": questionId }, { $set: { "questions.$.answer": answer } }).exec();
+            if (!response) {
+                return createResponse(true, "Test not found", [], 404);
+            }
+            return createResponse(true, "Answer stored successfully", response, 200);
+        } catch (error) {
+            return createErrorResponse(false, "Answer storage failed", [], `${error}`, 500, LOG_PRIORITY[3]);
         }
     };
 

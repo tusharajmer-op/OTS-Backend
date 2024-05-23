@@ -1,4 +1,4 @@
-import { Model } from 'mongoose';
+import { Model, Schema } from 'mongoose';
 import { questionModel, IQuestion } from './../schema';
 import { createResponse, createErrorResponse } from '../utilities/createResponse';
 import { apiResponse, errorResponse } from '../utilities/interfaces';
@@ -50,9 +50,10 @@ class QuestionModel {
             return createErrorResponse(false, "Question Deletion failed", [], `${err}`, 500, LOG_PRIORITY[3]);
         }
     };
-    getQuestionByTag = async (tag : string) : Promise<apiResponse|errorResponse> =>{
+    getUniqueQuestionByTag = async (tag : string,alreadyAskedQuestionList:string[]) : Promise<apiResponse|errorResponse> =>{
         try{
-            const question = await this.questionModel.find({tag : tag},{_id : 1,});
+            const alreadyAskedQuestionIds = alreadyAskedQuestionList.map((question) =>new Schema.ObjectId(question));
+            const question = await this.questionModel.find({tag : tag,_id :{$nin:alreadyAskedQuestionIds}},{_id : 1,});
             if(question.length === 0){
                 return createResponse(true, "No Question Found", [], 404);
             }
