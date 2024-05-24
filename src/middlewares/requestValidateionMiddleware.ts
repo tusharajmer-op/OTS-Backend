@@ -17,9 +17,8 @@ const validateIncomingRequest=()=>{
             
             if(_allowedMethod.includes(_method)){
                 const _schema = routeToSchema[_route];
-                console.log(_schema().validate(req.body));
                 if(!_schema){
-                    const cerror = createErrorResponse(false,'No schema found for this route',[],'alert',400,LOG_PRIORITY[3]);
+                    const cerror = createErrorResponse(false,'Something went wrong',[],'alert',500,LOG_PRIORITY[3]);
                     const er = ErrorHandler.customError(cerror);
                     next(er);
                 }

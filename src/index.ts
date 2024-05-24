@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 import { ErrorHandler } from './middlewares';
 import helmet from 'helmet';
 import Logger from "./services/loggerService";
-import { userRoute } from "./rotues";
+import { userRoute,testRoute } from "./rotues";
 env.config();
 const port = process.env.PORT || 3000;
 const app = express();
@@ -12,6 +12,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(helmet());
 app.use('/user',userRoute);
+app.use('/test',testRoute);
 const globalErrorHandler = (err : Errback,req : Request,res : Response,next :NextFunction)=>{
     if(err instanceof ErrorHandler){
         res.status(err.code).send({success : false, message : err.message,data: []});

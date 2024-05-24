@@ -1,4 +1,4 @@
-import {Schema, model} from 'mongoose';
+import mongoose, {Schema, model} from 'mongoose';
 
 export interface IUser {
     id? : string
@@ -21,11 +21,11 @@ export interface IQuestion {
     answer: string;
     created_at: Date;
     updated_at: Date;
-    difficulty: string;
+    difficulty: number;
     tag: string[];
 }
 export interface IAskedQuestion{
-    _id : Schema.Types.ObjectId;
+    questionId : mongoose.Types.ObjectId;
     question : string;
     options : string[];
     correctAnswer : string
@@ -33,8 +33,8 @@ export interface IAskedQuestion{
     status : string;
 }
 export interface ITest {
-    _id ? : Schema.Types.ObjectId;
-    user_id: Schema.Types.ObjectId;
+    _id ? : mongoose.Types.ObjectId;
+    user_id: mongoose.Types.ObjectId;
     questions: IAskedQuestion[];
     created_at: Date;
     updated_at: Date;
@@ -99,9 +99,9 @@ const question = new Schema<IQuestion>({
         default: Date.now,
     },
     difficulty: {
-        type: String,
-        enum: ['easy', 'medium', 'hard'],
-        default: 'easy',
+        type: Number,
+        enum: [1,2,3,4,5,6,7,8,9,10],
+        default: 5,
     },
     tag :[
         {
@@ -112,6 +112,10 @@ const question = new Schema<IQuestion>({
 });
 
 const attemptedQuestion = new Schema<IAskedQuestion>({
+    questionId : {
+        type : Schema.Types.ObjectId,
+        ref : 'Question'
+    },
     question : {
         type : String,
         required : true,

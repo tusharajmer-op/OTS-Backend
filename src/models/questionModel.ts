@@ -1,4 +1,4 @@
-import { Model, Schema } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { questionModel, IQuestion } from './../schema';
 import { createResponse, createErrorResponse } from '../utilities/createResponse';
 import { apiResponse, errorResponse } from '../utilities/interfaces';
@@ -52,8 +52,9 @@ class QuestionModel {
     };
     getUniqueQuestionByTag = async (tag : string,alreadyAskedQuestionList:string[]) : Promise<apiResponse|errorResponse> =>{
         try{
-            const alreadyAskedQuestionIds = alreadyAskedQuestionList.map((question) =>new Schema.ObjectId(question));
-            const question = await this.questionModel.find({tag : tag,_id :{$nin:alreadyAskedQuestionIds}},{_id : 1,});
+            const alreadyAskedQuestionIds = alreadyAskedQuestionList.map((question) =>new mongoose.Types.ObjectId(question));
+            
+            const question = await this.questionModel.find({difficulty : tag,_id :{$nin:alreadyAskedQuestionIds}}).exec();
             if(question.length === 0){
                 return createResponse(true, "No Question Found", [], 404);
             }

@@ -24,6 +24,25 @@ class RedisService {
             console.log(err);
         }
     };
+    set = async (key: string, value: string | number) : Promise<boolean|void> => {
+        try {
+            const record = await this.redis.set(key, value);
+            if (record) {
+                return true;
+            }
+        } catch (err) {
+            console.log(err);
+            return false;
+        }
+    };
+    get = async (key: string) : Promise< string|number|null |void> => {
+        try {
+            const value = await this.redis.get(key);
+            return value;
+        } catch (err) {
+            console.log(err);
+        }
+    };
 
 }
 
