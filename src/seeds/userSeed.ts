@@ -1,8 +1,12 @@
 import { IUser, userModel } from "../schema";
-import { encryptDate } from "../utilities/hashing";
-
+import { encryptData } from "../utilities/hashing";
+/**
+ * Function to seed the database with an admin user
+ * @returns void
+ * @async
+ */
 const seed = async () => {
-    const password = await encryptDate("password");
+    const password = await encryptData("password");
     try {
         await userModel.findOneAndUpdate<IUser>(
             {
