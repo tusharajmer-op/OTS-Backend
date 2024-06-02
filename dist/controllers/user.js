@@ -102,7 +102,6 @@ class UserController {
                 updated_at: new Date()
             };
             const response = await this.UserModel.store(createUser);
-
             if (response.status) {
                 const [user] = response.data;
                 const jwt = (0, services_1.createToken)({ "user_id": user.id, "role_id": user.role });

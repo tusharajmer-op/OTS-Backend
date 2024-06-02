@@ -1,4 +1,4 @@
-FROM node:18-alpine
+FROM --platform=linux/amd64 node:18-alpine
 WORKDIR /usr/src/app
 
 # Copy package.json and package-lock.json to the working directory.
@@ -7,7 +7,7 @@ COPY package*.json ./
 # Install dependencies.
 RUN npm ci
 
-RUN npm install -g typescript
+RUN  npm install -g typescript
 
 # Copy the rest of the application code to the working directory.
 COPY . .

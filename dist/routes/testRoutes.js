@@ -19,7 +19,7 @@ route.all('*', authMiddleware.authMiddleware);
 route.get('/start', async (req, res, next) => {
     try {
         const response = await testController.startTest(req, next);
-        
+        console.log(response);
         if (response) {
             res.status(response.code).send(response);
         }

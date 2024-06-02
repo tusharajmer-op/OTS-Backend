@@ -31,6 +31,7 @@ route.post('/sign-up', requestValidator, async (req, res, next) => {
 });
 route.post('/google-auth', requestValidator, async (req, res, next) => {
     try {
+        console.log('google-auth');
         const response = await userController.googleAuth(req, next);
         if (response) {
             res.status(response.code).send(response);
