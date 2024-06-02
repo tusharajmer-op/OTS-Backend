@@ -30,7 +30,6 @@ class AuthMiddleware{
     public authMiddleware=(req : Request,res : Response , next : NextFunction)=>{
         try{
             const headers = this._extractHeaders(req);
-        
             if(!headers.success){
                 // If the headers extraction was not successful, create an error response and pass it to the error handler middleware
                 const cerror = createErrorResponse(false,headers.message,[],'alert',headers.status,LOG_PRIORITY[3]);
@@ -49,8 +48,10 @@ class AuthMiddleware{
             req.body.payload = tokenValidity?.data[0];
             next();
         }catch(e){
-            // If an error occurs, log it to the console
-            console.log(e);
+            // If an error occurs, log it
+            const cerror = createErrorResponse(false,'Internal Server Error',[],`${e}`,500,LOG_PRIORITY[3]);
+            const error = ErrorHandler.customError(cerror);
+            next(error);
         }
     };
     public checkAdmin(req : Request,res:Response,next : NextFunction){

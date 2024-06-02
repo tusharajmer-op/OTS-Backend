@@ -31,7 +31,6 @@ const validateIncomingRequest = () => {
                     // If request validation fails, create an error response and pass it to the error handler
                     let message = '';
                     message += error.details.map((item: Record<string, any>) => `${item.message}`);
-                    console.log(message);
                     const cerror = createErrorResponse(false, 'Invalid Request', [], message, 400, LOG_PRIORITY[5]);
                     const er = ErrorHandler.customError(cerror);
                     next(er);
@@ -39,7 +38,10 @@ const validateIncomingRequest = () => {
             }
             next();
         } catch (e) {
-            console.log(e);
+            // If an error occurs, log it
+            const cerror = createErrorResponse(false, 'Internal Server Error', [], `${e}`, 500, LOG_PRIORITY[3]);
+            const er = ErrorHandler.customError(cerror);
+            next(er);
         }
     };
 };

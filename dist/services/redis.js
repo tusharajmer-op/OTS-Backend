@@ -1,56 +1,53 @@
-import { Redis } from "ioredis";
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const ioredis_1 = require("ioredis");
 class RedisService {
-    private redis: Redis;
-
+    redis;
     /**
      * Constructs a new instance of the RedisService class.
      */
     constructor() {
         const redisUrl = process.env.REDIS_URL;
-        try{
-            this.redis = redisUrl ? new Redis(redisUrl) : new Redis();
-        }catch(err){
-            console.log(err);
-            
+        try {
+            this.redis = redisUrl ? new ioredis_1.Redis(redisUrl) : new ioredis_1.Redis();
         }
-        this.redis = redisUrl ? new Redis(redisUrl) : new Redis();
+        catch (err) {
+            console.log(err);
+        }
+        this.redis = redisUrl ? new ioredis_1.Redis(redisUrl) : new ioredis_1.Redis();
     }
-
     /**
      * Stores the asked question IDs for a given test ID.
      * @param testId - The ID of the test.
      * @param questionId - The ID of the question.
      * @returns A boolean indicating whether the operation was successful.
      */
-    storeAskedQuestionIds = async (testId: string, questionId: string): Promise<boolean> => {
+    storeAskedQuestionIds = async (testId, questionId) => {
         try {
             const record = await this.redis.lpush(testId, questionId);
             if (record) {
                 return true;
             }
             return false;
-        } catch (err) {
-            
+        }
+        catch (err) {
             return false;
         }
     };
-
     /**
      * Retrieves the asked question IDs for a given test ID.
      * @param testId - The ID of the test.
      * @returns An array of question IDs.
      */
-    getAskedQuestionIds = async (testId: string): Promise<string[]> => {
+    getAskedQuestionIds = async (testId) => {
         try {
             const questions = await this.redis.lrange(testId, 0, -1);
             return questions;
-        } catch (err) {
-            
+        }
+        catch (err) {
             return [];
         }
     };
-
     /**
      * Sets a key-value pair in Redis.
      * @param key - The key to set.
@@ -58,34 +55,32 @@ class RedisService {
      * @param addOnString - An optional string to append to the key.
      * @returns A boolean indicating whether the operation was successful.
      */
-    set = async (key: string, value: string | number, addOnString = 'rating'): Promise<boolean> => {
+    set = async (key, value, addOnString = 'rating') => {
         try {
             const record = await this.redis.set(key + addOnString, value);
             if (record) {
                 return true;
             }
             return false;
-        } catch (err) {
-            
+        }
+        catch (err) {
             return false;
         }
     };
-
     /**
      * Retrieves the value for a given key from Redis.
      * @param key - The key to retrieve.
      * @param addOnString - An optional string to append to the key.
      * @returns The value associated with the key, or null if not found.
      */
-    get = async (key: string, addOnString = 'rating'): Promise<string | number | null> => {
+    get = async (key, addOnString = 'rating') => {
         try {
             const value = await this.redis.get(key + addOnString);
             return value;
-        } catch (err) {
-            
+        }
+        catch (err) {
             return null;
         }
     };
 }
-
-export default RedisService;
+exports.default = RedisService;

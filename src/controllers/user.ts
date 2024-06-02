@@ -41,7 +41,7 @@ class UserController {
                 next(error);
             }
         } catch (e) {
-            console.log(e);
+            
             const err = createErrorResponse(false,'Internal Server Error',[], `${e}` ,500,LOG_PRIORITY[3]);
             next(err);
         }
@@ -80,7 +80,8 @@ class UserController {
                 next(error);
             }
         } catch (e) {
-            console.log(e);
+            const err = createErrorResponse(false,'Internal Server Error',[], `${e}` ,500,LOG_PRIORITY[3]);
+            next(err);
         }
     };
 
@@ -97,7 +98,7 @@ class UserController {
         const googleUser = await googleResponse.json();
         const email = googleUser.email;
         const response = await this.UserModel.getUserByEmail(email);
-        console.log(response);
+
         if (response.code === 200) {
             const [user] = response.data as [IUser];
             const jwt = createToken({ "user_id": user.id, "role_id": user.role });
@@ -116,16 +117,19 @@ class UserController {
                 created_at: new Date(),
                 updated_at: new Date()
             };
-            console.log("CREATE USER -> ", createUser);
+            
             const response = await this.UserModel.store(createUser);
+            
             if (response.status) {
                 const [user] = response.data as [Record<string,string>];
                 const jwt = createToken({ "user_id": user.id, "role_id": user.role });
                 user.token = jwt;
-                return createResponse(true, 'User Created Successfully', [user], 201);
+                const userWithoutSensitiveFields = { "id": user.id?.toString(), "role": user.role,"email":user.email,"name":user.name};
+                const verifiedUser : verifiedUser = {"data": userWithoutSensitiveFields,"token":jwt};
+                return createResponse(true, 'User Logged In Successfully', [verifiedUser], 200);
             }
             else {
-                console.log(response);
+                
                 const error = ErrorHandler.customError(response);
                 next(error);
             }
@@ -144,7 +148,7 @@ class UserController {
             
             return userDetails as apiResponse;
         }catch(e){
-            console.log(e);
+            
             const err = createErrorResponse(false,'Internal Server Error',[], `${e}` ,500,LOG_PRIORITY[3]);
             next(err);
         }

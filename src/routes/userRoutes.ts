@@ -13,7 +13,7 @@ route.post('/log-in', requestValidator,async (req : Request, res : Response,next
         }
     }
     catch(e){
-        console.log(e);
+        res.status(500).send('Internal Server Error');
     }
 }); 
 route.post('/sign-up', requestValidator, async (req : Request, res : Response,next : NextFunction) => {
@@ -24,18 +24,19 @@ route.post('/sign-up', requestValidator, async (req : Request, res : Response,ne
         }
     }
     catch(e){
-        console.log(e);
+        res.status(500).send('Internal Server Error');
     }
 }); 
 route.post('/google-auth', requestValidator, async (req : Request, res : Response,next : NextFunction) => {
     try{
+        console.log('google-auth');
         const response = await userController.googleAuth(req,next);
         if (response) {
             res.status(response.code).send(response);
         }
     }
     catch(e){
-        console.log(e);
+        res.status(500).send('Internal Server Error');
     }
 });
 
@@ -48,13 +49,13 @@ route.get('/info', authMiddleware, async (req : Request, res : Response,next : N
          * This object contains the details of the user.
          */
         const response = await userController.getUserDetails(req,next);
-        console.log(response);
+        
         if (response) {
             res.status(response.code).send(response);
         }
     }
     catch(e){
-        console.log(e);
+        res.status(500).send('Internal Server Error');
     }
 });
 

@@ -55,7 +55,7 @@ class QuestionModel {
             }
             return createResponse(true, "Question Updated Successfully", newQuestion, 200);
         } catch (err) {
-            console.log(err);
+            
             return createErrorResponse(false, "Question update failed", [], `${err}`, 500, LOG_PRIORITY[3]);
         }
     };
@@ -72,7 +72,7 @@ class QuestionModel {
                 return createResponse(true, "", [], 200);
             return createResponse(true, "Question not found", deletedQuestion, 200);
         } catch (err) {
-            console.log(err);
+            
             return createErrorResponse(false, "Question Deletion failed", [], `${err}`, 500, LOG_PRIORITY[3]);
         }
     };
@@ -93,7 +93,7 @@ class QuestionModel {
             }
             return createResponse(true, "Questions fetched successfully", question, 200);
         } catch (err) {
-            console.log(err);
+            
             return createErrorResponse(false, "Questions fetch failed", [], `${err}`, 500, LOG_PRIORITY[3]);
         }
     };
@@ -111,7 +111,7 @@ class QuestionModel {
             }
             return createResponse(true, "Question fetched successfully", question, 200);
         } catch (err) {
-            console.log(err);
+            
             return createErrorResponse(false, "Question fetch failed", [], `${err}`, 500, LOG_PRIORITY[3]);
         }
     };

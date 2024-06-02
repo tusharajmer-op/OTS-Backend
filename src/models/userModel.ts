@@ -62,7 +62,6 @@ class UserModel {
     getUserById = async (id: string): Promise<apiResponse | errorResponse> => {
         try {
             const response = await this.userSchema.findById(id, { tests: 1, _id: 0 });
-            console.log(response);
             if (!response) {
                 return createResponse(true, "User not found", [], 404);
             }

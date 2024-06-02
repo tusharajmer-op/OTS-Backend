@@ -1,8 +1,8 @@
 import {connect, disconnect} from "mongoose";
-import {config} from "dotenv";
+import env from "dotenv";
 import userSeed from "./userSeed";
 import questionBandSeed from "./questionBankSeed";
-config();
+env.config();
 /**
  * The MongoDB connection URI.
  */
@@ -14,14 +14,24 @@ const uri = process.env.MONGO_URI as string;
  * @async
  * 
  */
-connect(uri).then(async()=>{
-    console.log("Connected to database");
-    await userSeed();
-    await questionBandSeed();
-}).catch((err)=>{
-    console.log("Error connecting to database");
-    console.log(err);
-}).finally(()=>{
-    disconnect();
-    process.exit(1);
-});
+const connectAndSeed = async (retryCount: number = 3) => {
+    try {
+        await connect(uri);
+        console.log("Connected to database");
+        await userSeed();
+        await questionBandSeed();
+        disconnect();
+        process.exit(1);
+    } catch (error) {
+        if (retryCount > 0) {
+            console.log(`Connection failed. Retrying ${retryCount} more times...`);
+            await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait for 1 second before retrying
+            connectAndSeed(retryCount - 1);
+        } else {
+            console.error("Failed to connect to database after multiple retries.");
+            process.exit(1);
+        }
+    }
+};
+
+connectAndSeed();

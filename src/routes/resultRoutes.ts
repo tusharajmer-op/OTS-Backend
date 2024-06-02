@@ -1,9 +1,12 @@
 import { ResultController } from "../controllers";
 import { NextFunction, Router,Request, Response } from "express";
-import { validateIncomingRequest } from "../middlewares";
+import { AuthMiddleware, validateIncomingRequest } from "../middlewares";
 const resultController = new ResultController();
 const validator = validateIncomingRequest();
+const authMiddleware = new AuthMiddleware();
 const router = Router();
+router.all('*', authMiddleware.authMiddleware);
+// Apply the authentication middleware to all routes
 router.get("/test/:testId", validator, async(req : Request,res:Response,next: NextFunction) => {
     try{
         /**
@@ -20,7 +23,7 @@ router.get("/test/:testId", validator, async(req : Request,res:Response,next: Ne
             res.status(500).send('Internal Server Error');
         }
     }catch(e){
-        console.log(e);
+        res.status(500).send('Internal Server Error');
     }
 });
 

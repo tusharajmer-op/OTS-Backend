@@ -1,57 +1,32 @@
-import mongoose, { Schema, model } from 'mongoose';
-
-// Define the IUser interface for user data
-export interface IUser {
-    id?: string;
-    name: string;
-    email: string;
-    password: string;
-    role: string;
-    created_at: Date;
-    updated_at: Date;
-    oauthLogin?: boolean;
-    tests: {
-        test: string;
-        result: number;
-    }[];
-}
-
-// Define the IQuestion interface for question data
-export interface IQuestion {
-    _id?: Schema.Types.ObjectId;
-    question: string;
-    options: string[];
-    answer: string;
-    created_at: Date;
-    updated_at: Date;
-    difficulty: number;
-    tag: string[];
-}
-
-// Define the IAskedQuestion interface for asked question data
-export interface IAskedQuestion {
-    questionId: mongoose.Types.ObjectId;
-    question: string;
-    options: string[];
-    correctAnswer: string;
-    answer: string | null;
-    status: string;
-    difficulty: number;
-    tag: string[];
-}
-
-// Define the ITest interface for test data
-export interface ITest {
-    _id?: mongoose.Types.ObjectId;
-    user_id: mongoose.Types.ObjectId;
-    questions: IAskedQuestion[];
-    created_at: Date;
-    updated_at: Date;
-    score: number;
-}
-
+"use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.testModel = exports.questionModel = exports.userModel = void 0;
+const mongoose_1 = __importStar(require("mongoose"));
 // Define the userSchema for the User model
-const userSchema = new Schema<IUser>({
+const userSchema = new mongoose_1.Schema({
     name: {
         type: String,
         required: true,
@@ -82,7 +57,7 @@ const userSchema = new Schema<IUser>({
     tests: [
         {
             test: {
-                type: mongoose.Types.ObjectId,
+                type: mongoose_1.default.Types.ObjectId,
                 ref: 'Test',
             },
             result: {
@@ -91,9 +66,8 @@ const userSchema = new Schema<IUser>({
         },
     ],
 });
-
 // Define the question schema for the Question model
-const question = new Schema<IQuestion>({
+const question = new mongoose_1.Schema({
     question: {
         type: String,
         required: true,
@@ -124,11 +98,10 @@ const question = new Schema<IQuestion>({
     ],
     updated_at: Date,
 });
-
 // Define the attemptedQuestion schema for the AskedQuestion model
-const attemptedQuestion = new Schema<IAskedQuestion>({
+const attemptedQuestion = new mongoose_1.Schema({
     questionId: {
-        type: Schema.Types.ObjectId,
+        type: mongoose_1.Schema.Types.ObjectId,
         ref: 'Question',
     },
     question: {
@@ -162,11 +135,10 @@ const attemptedQuestion = new Schema<IAskedQuestion>({
         },
     ],
 });
-
 // Define the test schema for the Test model
-const test = new Schema<ITest>({
+const test = new mongoose_1.Schema({
     user_id: {
-        type: Schema.Types.ObjectId,
+        type: mongoose_1.Schema.Types.ObjectId,
         ref: 'User',
         required: true,
         indexes: true,
@@ -182,20 +154,12 @@ const test = new Schema<ITest>({
         required: true,
     },
 });
-
-
 // Create the User model
-const userModel = model<IUser>('User', userSchema);
-
+const userModel = (0, mongoose_1.model)('User', userSchema);
+exports.userModel = userModel;
 // Create the Question model
-const questionModel = model<IQuestion>('Question', question);
-
+const questionModel = (0, mongoose_1.model)('Question', question);
+exports.questionModel = questionModel;
 // Create the Test model
-const testModel = model<ITest>('Test', test);
-
-// Export the models
-export {
-    userModel,
-    questionModel,
-    testModel,
-};
+const testModel = (0, mongoose_1.model)('Test', test);
+exports.testModel = testModel;
